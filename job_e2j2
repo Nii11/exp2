@@ -1,0 +1,30 @@
+cd /ws2/wxp2/
+filename=`ls`
+ext="${filename##*.}"
+file="${filename%.*}"
+case $ext in	
+	html)
+    	export DOCK="`sudo docker ps |grep webtest`"
+		if [[ $DOCK == "" ]]
+		then
+  		  if [[ $DOCK == "" ]]
+  		  then
+    		sudo docker run -dit --rm -v /ws2/wxp2:/var/www/html -p 8085:50 --name webtest httpd-apache:v1 
+  		  else
+    		sudo docker start  webtest
+  		  fi
+		else
+  	 	  echo "Docker running fine"
+		fi
+     ;;
+     
+	py)
+		sudo docker run --rm -v /ws2/:/exp/ --name pytest pydock:v2 /exp/wxp2/$filename >> /ws2/output.log  
+     ;;
+    
+   java)
+   		sudo docker run -dit --rm -v /ws2/:/exp/ --name jatest jadock:v1
+        sudo docker exec ja  bash -c "cd /exp/wxp2/ ; javac $filename ; java $file"
+        sudo docker stop ja
+      ;;
+esac
